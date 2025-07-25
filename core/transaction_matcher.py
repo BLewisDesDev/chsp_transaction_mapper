@@ -52,10 +52,10 @@ class TransactionMatcher:
                     requires_review=False
                 )
         
-        # Strategy 3: Address matching from description
-        address_match = self._address_match(transaction)
-        if address_match:
-            return address_match
+        # Strategy 3: Address matching from description - DISABLED
+        # address_match = self._address_match(transaction)
+        # if address_match:
+        #     return address_match
         
         # Strategy 4: Fuzzy name matching from description - DISABLED
         # name_match = self._fuzzy_name_match(transaction)
