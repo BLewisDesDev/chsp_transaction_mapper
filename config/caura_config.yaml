@@ -1,0 +1,80 @@
+# File: config/caura_config.yaml
+# Master configuration file for CHSP Transaction Mapper
+
+# Client ID validation patterns
+client_ids:
+  patterns:
+    acn: "^ACN[0-9]{8}$"
+    dex_da: "^DA-[a-f0-9]{16}$"
+    dex_hm: "^HM-[a-f0-9]{16}$"
+    case_id: "^C-[a-f0-9]{16}$"
+    slk: "^[A-Z]{5}[0-9]{12}$"
+
+# Matching configuration
+matching:
+  confidence_thresholds:
+    high: 0.85  # Auto-accept
+    medium: 0.60  # Requires review
+    low: 0.40  # Flag for manual review
+
+  fuzzy_matching:
+    name_threshold: 0.85
+    email_threshold: 0.90
+
+  exact_matching:
+    email_weight: 1.0
+    client_id_weight: 1.0
+    display_name_weight: 0.95
+
+  address_matching:
+    min_score: 0.80
+    enabled: true
+
+# ShiftCare configuration
+shiftcare:
+  accounts:
+    primary:
+      name: "domestic_assistance"
+      code: "DA"
+      base_url: "https://api.shiftcare.com/api/v3/"
+      timeout_seconds: 30
+    secondary:
+      name: "home_maintenance"
+      code: "HM"
+      base_url: "https://api.shiftcare.com/api/v3/"
+      timeout_seconds: 30
+
+# Platform-specific configurations
+platforms:
+  stripe:
+    amount_field: "amount"
+    email_field: "billing_details.email"
+    description_field: "description"
+    date_field: "date"
+
+  shiftcare:
+    client_id_field: "client_id"
+    display_name_field: "display_name"
+    invoice_field: "invoice_reference"
+
+# Logging configuration
+logging:
+  level: "INFO"
+  file: "logs/mapper.log"
+  max_size_mb: 10
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Registry file settings
+paths:
+  client_map: "/Users/byron/Repos/DATABASE/chsp_client_mapper/output/chsp_client_map.json"
+  output_base: "/Users/byron/repos/DATABASE/chsp_transaction_mapper"
+  reports_subdir: "reconciliation_reports"
+  statistics_subdir: "statistics"
+  logs_dir: "logs"
+
+# Data Paths
+data:
+  stripe_csv_file_path: "/Users/byron/Repos/DATABASE/chsp_transaction_mapper/stripe_payments.csv"
+  paper_reciepts_file_path: "/Users/byron/Repos/DATABASE/chsp_transaction_mapper/paper_reciepts.csv"
+  bank_transactions_file_path: "/Users/byron/Repos/DATABASE/chsp_transaction_mapper/bank_transactions_chsp_24-25.csv"

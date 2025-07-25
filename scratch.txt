@@ -1,0 +1,93 @@
+"CL00000008": {
+	"caura_id": "CL00000008",
+	"active": true,
+	"personal_info": {
+	"given_name": "James",
+	"family_name": "Dean",
+	"birth_date": "1940-09-11",
+	"gender": "Male",
+	"emails": [
+		"j.dean@gmail.com"
+	],
+	"contact_numbers": [
+		"0296044513",
+		"0411226429"
+	],
+	"other_contacts": [],
+	"concerns": "Concerns:\nI experience pain in my head and pelvis.\n\nGoals:\nI would like to maintain my lawns and garde..."
+	},
+	"location": {
+	"address_1": null,
+	"address_2": "13 SUNSET STREET",
+	"suburb": "BEVERLY PARK",
+	"state_code": "NSW",
+	"postcode": "2164",
+	"dex_region": [
+		"South-West"
+	]
+	},
+	"platform_identifiers": [
+	{
+		"platform": "aged_care",
+		"identifiers": {
+		"acn": "AC009274980"
+		},
+		"metadata": {}
+	},
+	{
+		"platform": "dex_da",
+		"identifiers": {
+		"client_id": "DA-6a56a3204c685489",
+		"case_id": "C-b1fe7ba0c4948b54",
+		"slk": "UD2AR110919402"
+		},
+		"metadata": {}
+	},
+	{
+		"platform": "dex_hm",
+		"identifiers": {
+		"client_id": "HM-6a56a3204c685489",
+		"case_id": "C-50cae1aed9cf0508",
+		"slk": "UD2AR110919402"
+		},
+		"metadata": {}
+	},
+	{
+		"platform": "shiftcare_domestic_assistance",
+		"identifiers": {
+		"client_id": "681651",
+		"display_name": "James Dean"
+		},
+		"metadata": {}
+	},
+	{
+		"platform": "shiftcare_home_maintenance",
+		"identifiers": {
+		"client_id": "846369",
+		"display_name": "James Dean"
+		},
+		"metadata": {}
+	}
+	],
+	"service_information": {
+	"services": [
+		{
+		"service_type": "domestic_assistance",
+		"status": "active",
+		"first_service_date": "2025-01-06",
+		"last_service_date": "2025-06-23",
+		"session_count": 13
+		}
+	]
+	},
+	"documents": {
+	"service_agreements": [],
+	"care_plans": []
+	},
+	"audit": {
+	"created_date": "2025-07-25",
+	"created_by": "dex_enhanced_import",
+	"last_modified": "2025-07-25T12:39:30.015150",
+	"modification_count": 6
+	}
+}

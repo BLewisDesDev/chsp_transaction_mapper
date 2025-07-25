@@ -1,0 +1,41 @@
+# File: config/caura_config.yaml
+# Master configuration file for CHSP Client Mapper
+
+# Client ID validation patterns
+client_ids:
+  patterns:
+    acn: "^ACN[0-9]{8}$"
+    dex_da: "^DA-[a-f0-9]{16}$"
+    dex_hm: "^HM-[a-f0-9]{16}$"
+    case_id: "^C-[a-f0-9]{16}$"
+    slk: "^[A-Z]{5}[0-9]{12}$"
+
+# ShiftCare configuration
+shiftcare:
+  accounts:
+    primary:
+      name: "domestic_assistance"
+      code: "DA"
+      base_url: "https://api.shiftcare.com/api/v3/"
+      timeout_seconds: 30
+    secondary:
+      name: "home_maintenance"
+      code: "HM"
+      base_url: "https://api.shiftcare.com/api/v3/"
+      timeout_seconds: 30
+
+# Logging configuration
+logging:
+  level: "INFO"
+  file: "logs/mapper.log"
+  max_size_mb: 10
+  backup_count: 5
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+# Registry file settings
+Paths:
+  transaction_registry_path: "/Users/byron/repos/DATABASE/chsp_transaction_mapper/transaction_registry.json"
+  trackers_path: "/Users/byron/repos/DATABASE/chsp_transaction_mapper/trackers/"
+  input_data_path: "/Users/byron/repos/DATABASE/chsp_transaction_mapper/input/"
+  # Specific Data Sources
+  client_map: "/Users/byron/Repos/DATABASE/chsp_client_mapper/output/chsp_client_map.json"
