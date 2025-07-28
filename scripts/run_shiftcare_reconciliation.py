@@ -20,6 +20,7 @@ load_dotenv(project_root / "config" / ".env")
 from core.client_map_loader import ClientMapLoader
 from core.transaction_matcher import TransactionMatcher
 from importers.shiftcare_importer import ShiftCareImporter
+from exporters.shiftcare_report import ShiftCareReport
 
 
 def load_config(config_path: str) -> dict:
@@ -68,10 +69,30 @@ def main():
         
         # Run ShiftCare import
         importer = ShiftCareImporter(config, matcher, account_type)
+        
+        # Run reconciliation (this calls extract_transactions internally)
         report = importer.reconcile_transactions("shiftcare_api")
+        
+        # Get detailed data after reconciliation
+        invoices_data, shifts_data = importer.get_detailed_data()
         
         # Export results
         export_reconciliation_report(report, config['paths'])
+        
+        # Export detailed Excel report
+        print("Creating detailed Excel report...")
+        excel_exporter = ShiftCareReport(client_map)
+        output_dir = Path(config['paths']['output_base']) / config['paths']['reports_subdir']
+        excel_file = output_dir / f"{report.run_id}_shiftcare_{account_type.lower()}_detailed.xlsx"
+        
+        excel_path = excel_exporter.export_excel_report(
+            invoices_data=invoices_data,
+            shifts_data=shifts_data,
+            report=report,
+            output_path=str(excel_file)
+        )
+        
+        print(f"Detailed Excel report saved to: {excel_path}")
         
         # Print summary
         print(f"\n🎯 ShiftCare {account_type} Reconciliation Complete")
@@ -90,6 +111,34 @@ def main():
         print(f"\n🔍 Match Methods:")
         for method, count in report.match_method_breakdown.items():
             print(f"   {method.replace('_', ' ').title()}: {count}")
+        
+        # Print detailed data summary
+        print(f"\n📋 Detailed Data Summary:")
+        print(f"   Total invoices processed: {len(invoices_data)}")
+        print(f"   Total shifts extracted: {len(shifts_data)}")
+        
+        # Calculate unique clients
+        unique_clients = set()
+        for invoice in invoices_data:
+            if invoice.get('client_id'):
+                unique_clients.add(invoice['client_id'])
+        print(f"   Unique clients: {len(unique_clients)}")
+        
+        # Calculate date range of services
+        if shifts_data:
+            service_dates = [shift.get('service_date') for shift in shifts_data if shift.get('service_date')]
+            if service_dates:
+                service_dates.sort()
+                # Format dates to dd/mm/yy format
+                def format_date(date_str):
+                    if '/' in date_str and len(date_str) == 10:  # dd/mm/yyyy format
+                        parts = date_str.split('/')
+                        return f"{parts[0]}/{parts[1]}/{parts[2][-2:]}"  # Convert yyyy to yy
+                    return date_str
+                
+                start_date = format_date(service_dates[0])
+                end_date = format_date(service_dates[-1])
+                print(f"   Service date range: {start_date} - {end_date}")
         
     except Exception as e:
         print(f"❌ Reconciliation failed: {e}")

@@ -13,9 +13,9 @@ client_ids:
 # Matching configuration
 matching:
   confidence_thresholds:
-    high: 0.85  # Auto-accept
-    medium: 0.60  # Requires review
-    low: 0.40  # Flag for manual review
+    high: 0.85 # Auto-accept
+    medium: 0.60 # Requires review
+    low: 0.40 # Flag for manual review
 
   fuzzy_matching:
     name_threshold: 0.85
@@ -76,5 +76,5 @@ paths:
 # Data Paths
 data:
   stripe_csv_file_path: "/Users/byron/Repos/DATABASE/chsp_transaction_mapper/stripe_payments.csv"
-  paper_reciepts_file_path: "/Users/byron/Repos/DATABASE/chsp_transaction_mapper/paper_reciepts.csv"
+  paper_receipts_file_path: "/Users/byron/repos/DATABASE/chsp_transaction_mapper/paper_reciepts/HM-Paper.csv"
   bank_transactions_file_path: "/Users/byron/Repos/DATABASE/chsp_transaction_mapper/bank_transactions_chsp_24-25.csv"

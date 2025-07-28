@@ -26,7 +26,7 @@ class PaperReceiptImporter(BaseTransactionImporter):
         try:
             # Check if file has expected paper receipt columns
             df = pd.read_csv(source_path, nrows=1)
-            required_columns = ['Name', 'DATE', 'AMOUNT', 'Email']
+            required_columns = ['Name', 'Suburb', 'DATE', 'AMOUNT', 'Service', 'Email']
             
             for col in required_columns:
                 if col not in df.columns:
@@ -45,6 +45,11 @@ class PaperReceiptImporter(BaseTransactionImporter):
             try:
                 # Parse date
                 date_str = str(row['DATE']).strip()
+                
+                # Skip rows with empty or invalid dates
+                if not date_str or date_str.lower() in ['nan', 'none', '']:
+                    continue
+                
                 # Try multiple date formats
                 try:
                     transaction_date = datetime.strptime(date_str, '%d/%m/%Y').date()
@@ -52,7 +57,11 @@ class PaperReceiptImporter(BaseTransactionImporter):
                     try:
                         transaction_date = datetime.strptime(date_str, '%Y-%m-%d').date()
                     except ValueError:
-                        transaction_date = datetime.strptime(date_str, '%m/%d/%Y').date()
+                        try:
+                            transaction_date = datetime.strptime(date_str, '%m/%d/%Y').date()
+                        except ValueError:
+                            print(f"Warning: Could not parse date '{date_str}' in row {idx+1}, skipping")
+                            continue
                 
                 # Parse amount
                 amount_str = str(row['AMOUNT']).replace('$', '').replace(',', '').strip()
@@ -60,16 +69,19 @@ class PaperReceiptImporter(BaseTransactionImporter):
                 
                 # Get client details
                 client_name = str(row['Name']).strip()
+                client_suburb = str(row['Suburb']).strip() if pd.notna(row['Suburb']) else None
                 client_email = str(row['Email']).strip() if pd.notna(row['Email']) else None
                 service = str(row.get('Service', '')).strip()
-                notes = str(row.get('Notes', '')).strip()
+                comment = str(row.get('Comment', '')).strip()
                 
                 # Create description
                 description = f"Paper Receipt - {client_name}"
+                if client_suburb:
+                    description += f" ({client_suburb})"
                 if service:
-                    description += f" ({service})"
-                if notes:
-                    description += f" - {notes}"
+                    description += f" - {service}"
+                if comment:
+                    description += f" - {comment}"
                 
                 # Create transaction
                 transaction = Transaction(
@@ -81,8 +93,9 @@ class PaperReceiptImporter(BaseTransactionImporter):
                     platform="paper_receipt",
                     platform_metadata={
                         "client_name": client_name,
+                        "client_suburb": client_suburb,
                         "service": service,
-                        "notes": notes,
+                        "comment": comment,
                     },
                     raw_data=row.to_dict()
                 )

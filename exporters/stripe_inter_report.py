@@ -71,14 +71,30 @@ class StripeInterReport:
         # Add or update Matched column 
         enhanced_df = transactions_df.copy()
         
+        # Determine ID column (different for different platforms)
+        id_column = None
+        if 'id' in enhanced_df.columns:
+            id_column = 'id'
+        elif enhanced_df.index.name:
+            id_column = enhanced_df.index.name
+        else:
+            # For paper receipts, create an ID column based on row index
+            enhanced_df['transaction_id'] = [f"receipt_{i+1}" for i in range(len(enhanced_df))]
+            id_column = 'transaction_id'
+        
         # Check if Matched column already exists
         if 'Matched' not in enhanced_df.columns:
-            enhanced_df.insert(0, 'Matched', enhanced_df['id'].map(
-                lambda x: 'Matched' if match_status.get(str(x), False) else 'Unmatched'
-            ))
+            if id_column == 'transaction_id':
+                enhanced_df.insert(0, 'Matched', enhanced_df[id_column].map(
+                    lambda x: 'Matched' if match_status.get(str(x), False) else 'Unmatched'
+                ))
+            else:
+                enhanced_df.insert(0, 'Matched', enhanced_df[id_column].map(
+                    lambda x: 'Matched' if match_status.get(str(x), False) else 'Unmatched'
+                ))
         else:
             # Update existing Matched column
-            enhanced_df['Matched'] = enhanced_df['id'].map(
+            enhanced_df['Matched'] = enhanced_df[id_column].map(
                 lambda x: 'Matched' if match_status.get(str(x), False) else 'Unmatched'
             )
         
